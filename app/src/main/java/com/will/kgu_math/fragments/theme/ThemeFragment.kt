@@ -38,8 +38,7 @@ class ThemeFragment(private val themePath: String? = null) : Fragment() {
     }
 
     private fun setupViewPager() {
-        val fragments = vm.filePaths!!.map { PdfViewerFragment(it) }
-        println(vm.filePaths!!.joinToString { it })
+        val fragments = vm.filePaths!!.map { filePath -> PdfViewerFragment(filePath) }
 
         binding.viewPager.adapter = ViewPagerAdapter(
             childFragmentManager,

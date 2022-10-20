@@ -49,6 +49,7 @@ class SubjectFragment(private val subjectPath: String? = null) : Fragment() {
     private fun showTheme(themeName: String) {
         requireActivity().supportFragmentManager.commit {
             add(R.id.nav_host_fragment, ThemeFragment("$subjectPath/$themeName"))
+            addToBackStack(themeName)
         }
     }
 

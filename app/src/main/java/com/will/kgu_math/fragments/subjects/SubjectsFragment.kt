@@ -39,10 +39,12 @@ class SubjectsFragment : Fragment() {
     }
 
     private fun setupViewPager() {
+        val fragments = vm.subjectNames!!.map { subjectName -> SubjectFragment("root/$subjectName") }
+
         binding.viewPager.adapter = ViewPagerAdapter(
             childFragmentManager,
-            lifecycle,
-            vm.subjectNames!!.map { subjectName -> SubjectFragment("root/$subjectName") }
+            viewLifecycleOwner.lifecycle,
+            fragments
         )
     }
 
