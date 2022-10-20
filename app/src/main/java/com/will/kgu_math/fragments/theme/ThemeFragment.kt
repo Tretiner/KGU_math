@@ -48,4 +48,8 @@ class ThemeFragment(private val themePath: String? = null) : Fragment() {
         )
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

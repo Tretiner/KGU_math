@@ -51,4 +51,9 @@ class SubjectFragment(private val subjectPath: String? = null) : Fragment() {
             add(R.id.nav_host_fragment, ThemeFragment("$subjectPath/$themeName"))
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

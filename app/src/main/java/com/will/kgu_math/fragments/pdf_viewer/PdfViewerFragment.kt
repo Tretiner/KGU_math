@@ -91,4 +91,8 @@ class PdfViewerFragment(private val filePath: String? = null) : Fragment() {
         close()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
