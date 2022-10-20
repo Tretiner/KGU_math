@@ -8,14 +8,16 @@ import android.os.ParcelFileDescriptor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.will.kgu_math.App
 import com.will.kgu_math.databinding.FragmentPdfViewerBinding
 import com.will.kgu_math.decorators.Spacer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileDescriptor
 
 class PdfViewerFragment(private val filePath: String? = null) : Fragment() {
 
@@ -35,40 +37,19 @@ class PdfViewerFragment(private val filePath: String? = null) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        CoroutineScope(Dispatchers.IO).launch {
-        filePath?.let {
-            vm.filePath = filePath
-            println(vm.filePath)
-
-            vm.pages.clear()
-
-            val file = File(App.context.cacheDir, "temp.pdf")
-
-            App.context.assets.open(vm.filePath!!).use { inp ->
-                file.outputStream().use { out ->
-                    inp.copyTo(out)
-                }
+        CoroutineScope(Dispatchers.IO).launch {
+            if (filePath != null && filePath != vm.filePath) {
+                vm.filePath = filePath
+                renderPdf()
             }
 
-            val pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-
-//            val pfd = requireActivity().assets.openFd(vm.filePath!!).parcelFileDescriptor
-
-            val pdfRenderer = PdfRenderer(pfd)
-
-            pdfRenderer.renderPages(
-                onCreateBitmap = { page -> makeBitmapForPdfPage(page) },
-                onRender = { bitmap -> vm.pages.add(bitmap) }
-            )
+            withContext(Dispatchers.Main) {
+                binding.rwPages.apply {
+                    addItemDecoration(Spacer(20))
+                    adapter = PagesAdapter(vm.pages)
+                }
+            }
         }
-
-//            withContext(Dispatchers.Main) {
-        binding.rwPages.apply {
-            addItemDecoration(Spacer(0, 20))
-            adapter = PagesAdapter(vm.pages)
-//                }
-        }
-//        }
 
     }
 
@@ -78,7 +59,29 @@ class PdfViewerFragment(private val filePath: String? = null) : Fragment() {
         Bitmap.Config.ARGB_8888
     )
 
-    private fun PdfRenderer.renderPages(onCreateBitmap: (PdfRenderer.Page) -> Bitmap, onRender: (Bitmap) -> Unit) {
+    private fun renderPdf(){
+        vm.pages.clear()
+
+        val file = File(App.context.cacheDir, "temp.pdf")
+
+        App.context.assets.open(vm.filePath!!).use { inp ->
+            file.outputStream().use { out ->
+                inp.copyTo(out)
+            }
+        }
+
+        val pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+
+        val pdfRenderer = PdfRenderer(pfd)
+
+        pdfRenderer.renderPages(
+            onCreateBitmap = { page -> makeBitmapForPdfPage(page) },
+            onRender = { bitmap -> vm.pages.add(bitmap) },
+            onComplete = {  }
+        )
+    }
+
+    private fun PdfRenderer.renderPages(onCreateBitmap: (PdfRenderer.Page) -> Bitmap, onRender: (Bitmap) -> Unit, onComplete: () -> Unit) {
         for (i in 0 until pageCount) {
             openPage(i).use { page ->
                 val bitmap = onCreateBitmap(page)
