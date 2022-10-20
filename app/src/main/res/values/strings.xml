@@ -6,19 +6,22 @@
 
     <!-- Уровни -->
     <string name="base">Теория</string>
-    <string name="low">База</string>
-    <string name="high">Продвинуто</string>
+    <string name="easy">Легко</string>
+    <string name="hard">Сложно</string>
     <string name="kr">Контрольная</string>
 
 
-    <!-- | Предметы | -->
     <!-- Предмет -->
     <string name="ag">Алгебра и Геометрия</string>
     <!-- Темы -->
     <string name="mnojestva">Множества</string>
-    <string name="mnojestva1">Множества</string>
-    <string name="mnojestva2">Множества</string>
-    <string name="mnojestva3">Множества</string>
+    <string name="complex">Комплексные числа</string>
+    <string name="matrix">Матрицы</string>
+    <string name="opredelitel">Определитель</string>
+    <string name="sys_lineynih_uravneniy">Системы линейных уравнений</string>
+    <string name="delimost">Делимость</string>
+    <string name="mnogochleny">Многочлены</string>
+    <string name="equalities">Сравнения</string>
 
 
     <!-- Предмет -->
