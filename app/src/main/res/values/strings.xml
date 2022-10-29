@@ -11,13 +11,18 @@
     <string name="kr">Контрольная</string>
 
 
+    <!-- Варианты -->
+    <string name="var">Варианты</string>
+    <string name="ag_b">Б: Алгебра и Геометрия</string>
+    <string name="ma_b">Б: Матанализ</string>
+
     <!-- Предмет -->
     <string name="ag">Алгебра и Геометрия</string>
     <!-- Темы -->
     <string name="mnojestva">Множества</string>
     <string name="complex">Комплексные числа</string>
     <string name="matrix">Матрицы</string>
-    <string name="opredelitel">Определитель</string>
+    <string name="opredelitel">Оперделитель</string>
     <string name="sys_lineynih_uravneniy">Системы линейных уравнений</string>
     <string name="delimost">Делимость</string>
     <string name="mnogochleny">Многочлены</string>
