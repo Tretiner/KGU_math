@@ -13,6 +13,8 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+        resConfigs "ru", "en"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -31,6 +33,11 @@ android {
 
         debug {
             applicationIdSuffix '.debug'
+        }
+    }
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging false
         }
     }
     compileOptions {
@@ -53,10 +60,10 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2'
 
     // App theme
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.7.0'
 
     // Android extensions
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
-    implementation 'androidx.fragment:fragment-ktx:1.5.3'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
 }
