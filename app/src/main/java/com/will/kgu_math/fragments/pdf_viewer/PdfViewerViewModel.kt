@@ -7,4 +7,14 @@ class PdfViewerViewModel : ViewModel() {
     var filePath: String? = null
 
     val pages = mutableListOf<Bitmap>()
+
+    fun clearPages(){
+        pages.forEach { it.recycle() }
+        pages.clear()
+    }
+
+    override fun onCleared() {
+        clearPages()
+        super.onCleared()
+    }
 }

@@ -16,18 +16,16 @@ class PagesAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagesAdapter.ViewHolder {
-        val binding = TemplatePageBinding.inflate(
+    override fun onBindViewHolder(holder: PagesAdapter.ViewHolder, pos: Int) =
+        holder.bind(pages[pos])
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        TemplatePageBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-
-        return ViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: PagesAdapter.ViewHolder, pos: Int) =
-        holder.bind(pages[pos])
+    )
 
     override fun getItemCount(): Int = pages.size
 }

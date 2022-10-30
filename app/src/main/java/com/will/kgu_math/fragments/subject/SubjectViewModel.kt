@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 
 class SubjectViewModel : ViewModel() {
 
-    lateinit var subjectPath: String
+    var subjectPath: String = ""
 
-    var themeNames: List<String>? = null
+    lateinit var themeNames: List<String>
 }

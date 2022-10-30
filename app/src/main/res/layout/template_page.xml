@@ -2,9 +2,9 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="4dp"
-    android:background="@color/white"
-    android:cropToPadding="true"
     android:adjustViewBounds="true"
-    android:scaleType="centerCrop"
-    android:contentDescription="@string/cd_page" />
+    android:contentDescription="@string/cd_page"
+    android:cropToPadding="true"
+    android:elevation="2dp"
+    android:outlineProvider="bounds"
+    android:scaleType="centerCrop" />

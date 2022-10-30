@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import com.will.kgu_math.App
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.will.kgu_math.R
 import com.will.kgu_math.databinding.FragmentSubjectBinding
 import com.will.kgu_math.fragments.theme.ThemeFragment
+import com.will.kgu_math.utils.AssetsManager
 
 class SubjectFragment(private val subjectPath: String? = null) : Fragment() {
 
@@ -30,31 +31,34 @@ class SubjectFragment(private val subjectPath: String? = null) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        subjectPath?.let { vm.subjectPath = it }
 
-        if (vm.themeNames == null) {
-            vm.themeNames = App.context.assets
-                .list(vm.subjectPath)!!
-                .toList()
+        subjectPath?.let {
+            vm.subjectPath = subjectPath
+
+            vm.themeNames = AssetsManager.mapAssets(vm.subjectPath)
         }
 
         binding.rwThemes.apply {
+            setHasFixedSize(true)
+            addItemDecoration(DividerItemDecoration(binding.rwThemes.context, DividerItemDecoration.VERTICAL))
             adapter = ThemesAdapter(
-                vm.themeNames!!,
-                onSelected = { showTheme(it) }
+                vm.themeNames,
+                onSelected = ::showTheme
             )
         }
     }
 
     private fun showTheme(themeName: String) {
         requireActivity().supportFragmentManager.commit {
-            add(R.id.nav_host_fragment, ThemeFragment("$subjectPath/$themeName"))
+            setReorderingAllowed(true)
             addToBackStack(themeName)
+            replace(R.id.nav_host_fragment, ThemeFragment("${vm.subjectPath}/$themeName"), themeName)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rwThemes.adapter = null
         _binding = null
     }
 }

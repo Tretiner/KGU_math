@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.will.kgu_math.App
 import com.will.kgu_math.ViewPagerAdapter
 import com.will.kgu_math.databinding.FragmentThemeBinding
 import com.will.kgu_math.fragments.pdf_viewer.PdfViewerFragment
+import com.will.kgu_math.utils.AssetsManager
 
 class ThemeFragment(private val themePath: String? = null) : Fragment() {
 
@@ -31,20 +33,22 @@ class ThemeFragment(private val themePath: String? = null) : Fragment() {
         themePath?.let {
             vm.themePath = it
 
-            vm.filePaths = requireActivity().assets.list(vm.themePath)!!.map { fileName ->  "$themePath/$fileName"}
+            vm.filePaths = AssetsManager.mapAssets(vm.themePath) { fileName ->  "${vm.themePath}/$fileName"}
         }
 
         setupViewPager()
     }
 
     private fun setupViewPager() {
+        println("SETUP")
         val fragments = vm.filePaths!!.map { filePath -> PdfViewerFragment(filePath) }
 
         binding.viewPager.adapter = ViewPagerAdapter(
             childFragmentManager,
-            lifecycle,
+            viewLifecycleOwner.lifecycle,
             fragments
         )
+        println("SPUNCHLINE")
     }
 
     override fun onDestroyView() {

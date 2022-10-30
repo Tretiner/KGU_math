@@ -28,7 +28,6 @@
     <string name="mnogochleny">Многочлены</string>
     <string name="equalities">Сравнения</string>
 
-
     <!-- Предмет -->
     <string name="ma">Матанализ</string>
     <!-- Темы -->
@@ -36,6 +35,4 @@
     <string name="predel">Пердел</string>
     <string name="proizvodnaya">Производная</string>
     <string name="primenenie_proizvodnoy">Применение производной</string>
-
-
 </resources>

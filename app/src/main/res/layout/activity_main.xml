@@ -4,4 +4,6 @@
     android:id="@+id/nav_host_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:name="com.will.kgu_math.fragments.subjects.SubjectsFragment"
+    android:tag="main"
     tools:context=".MainActivity" />

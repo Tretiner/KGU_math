@@ -5,6 +5,7 @@ import android.graphics.pdf.PdfRenderer
 import android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,11 +41,13 @@ class PdfViewerFragment(private val filePath: String? = null) : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             if (filePath != null && filePath != vm.filePath) {
                 vm.filePath = filePath
+
                 renderPdf()
             }
 
             withContext(Dispatchers.Main) {
                 binding.rwPages.apply {
+                    setHasFixedSize(true)
                     addItemDecoration(Spacer(20))
                     adapter = PagesAdapter(vm.pages)
                 }
@@ -53,14 +56,8 @@ class PdfViewerFragment(private val filePath: String? = null) : Fragment() {
 
     }
 
-    private fun makeBitmapForPdfPage(page: PdfRenderer.Page) = Bitmap.createBitmap(
-        resources.displayMetrics.densityDpi * page.width / 100,
-        resources.displayMetrics.densityDpi * page.height / 100,
-        Bitmap.Config.ARGB_8888
-    )
-
-    private fun renderPdf(){
-        vm.pages.clear()
+    private fun renderPdf() {
+        vm.clearPages()
 
         val file = File(App.context.cacheDir, "temp.pdf")
 
@@ -72,30 +69,40 @@ class PdfViewerFragment(private val filePath: String? = null) : Fragment() {
 
         val pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
 
-        val pdfRenderer = PdfRenderer(pfd)
-
-        pdfRenderer.renderPages(
-            onCreateBitmap = { page -> makeBitmapForPdfPage(page) },
+        PdfRenderer(pfd).renderPages(
+            onCreateBitmap = { page -> page.toBitmap() },
             onRender = { bitmap -> vm.pages.add(bitmap) },
-            onComplete = {  }
+            onComplete = { file.delete() }
         )
     }
 
     private fun PdfRenderer.renderPages(onCreateBitmap: (PdfRenderer.Page) -> Bitmap, onRender: (Bitmap) -> Unit, onComplete: () -> Unit) {
         for (i in 0 until pageCount) {
-            openPage(i).use { page ->
-                val bitmap = onCreateBitmap(page)
+            try {
+                openPage(i).use { page ->
+                    val bitmap = onCreateBitmap(page)
 
-                page.render(bitmap, null, null, RENDER_MODE_FOR_DISPLAY)
+                    page.render(bitmap, null, null, RENDER_MODE_FOR_DISPLAY)
 
-                onRender(bitmap)
+                    onRender(bitmap)
+                }
+            } catch (e: Exception) {
+                Log.e("pdf", "page render error", e)
             }
         }
         close()
+        onComplete()
     }
+
+    private fun PdfRenderer.Page.toBitmap() = Bitmap.createBitmap(
+        App.res.displayMetrics.densityDpi * this.width / 175,
+        App.res.displayMetrics.densityDpi * this.height / 175,
+        Bitmap.Config.ARGB_8888
+    )
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rwPages.adapter = null
         _binding = null
     }
 }

@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
-import com.will.kgu_math.App
 import com.will.kgu_math.ViewPagerAdapter
 import com.will.kgu_math.databinding.FragmentSubjectsBinding
 import com.will.kgu_math.fragments.subject.SubjectFragment
+import com.will.kgu_math.utils.AssetsManager
 import com.will.kgu_math.utils.LocaleManager
 
 class SubjectsFragment : Fragment() {
@@ -31,8 +31,9 @@ class SubjectsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (vm.subjectNames == null)
-            vm.subjectNames = App.context.assets.list("root")!!
+        if (vm.subjectNames == null) {
+            vm.subjectNames = AssetsManager.mapAssets("root")
+        }
 
         setupViewPager()
         setupTabLayout()
