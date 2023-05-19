@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!--  Primary  -->
+    <color name="primary_day">#1D8DC1</color>
+    <color name="primary_night">#037CAC</color>
+    <!--  Primary variant  -->
+    <color name="primary_variant_day">#FFFFFF</color>
+    <color name="primary_variant_night">#FFFFFF</color>
+    <!--  On primary  -->
+    <color name="on_primary_day">#FFFFFF</color>
+    <color name="on_primary_night">#000000</color>
+
+    <!--  Secondary  -->
+    <color name="secondary_day">#FFFFFF</color>
+    <color name="secondary_night">#212121</color>
+    <!--  Secondary variant  -->
+    <color name="secondary_variant_day">#FFFFFF</color>
+    <color name="secondary_variant_night">#212121</color>
+    <!--  On secondary  -->
+    <color name="on_secondary_day">#FFFFFF</color>
+    <color name="on_secondary_night">#212121</color>
+
+    <!--  Surface  -->
+    <color name="surface_day">#FFFFFF</color>
+    <color name="surface_night">#212121</color>
+
+    <!--  On surface  -->
+    <color name="on_surface_day">#000000</color>
+    <color name="on_surface_night">#F3F3F3</color>
+
+    <!--  App background  -->
+    <color name="background_day">#FFFFFF</color>
+    <color name="background_night">#101010</color>
+
+    <!--  On background  -->
+    <color name="on_background_day">#000000</color>
+    <color name="on_background_night">#F3F3F3</color> <!-- #D3CFCA -->
 </resources>

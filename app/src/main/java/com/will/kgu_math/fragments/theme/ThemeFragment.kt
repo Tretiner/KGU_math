@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import com.will.kgu_math.ViewPagerAdapter
 import com.will.kgu_math.databinding.FragmentThemeBinding
 import com.will.kgu_math.fragments.pdf_viewer.PdfViewerFragment
-import com.will.kgu_math.utils.AssetsManager
+import com.will.kgu_math.app.AssetsManager
 
 class ThemeFragment(private val themePath: String? = null) : Fragment() {
 

@@ -6,10 +6,9 @@ import androidx.lifecycle.ViewModel
 class PdfViewerViewModel : ViewModel() {
     var filePath: String? = null
 
-    val pages = mutableListOf<Bitmap>()
+    lateinit var pages: PdfList
 
-    fun clearPages(){
-        pages.forEach { it.recycle() }
+    private fun clearPages(){
         pages.clear()
     }
 

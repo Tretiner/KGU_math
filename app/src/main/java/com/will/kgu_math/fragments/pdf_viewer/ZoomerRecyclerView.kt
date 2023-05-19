@@ -6,157 +6,141 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
+import android.view.View
+
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.max
-import kotlin.math.min
+import java.lang.Exception
+import java.lang.Float.max
+import java.lang.Float.min
 
 class ZoomerRecyclerView : RecyclerView {
-    private var maxWidth = 0.0f
-    private var maxHeight = 0.0f
-    private var width = 0f
-    private var height = 0f
 
-    private var mActivePointerId = INVALID_POINTER_ID
+    private var mScaleGestureDetector: ScaleGestureDetector
 
-    private lateinit var mScaleDetector: ScaleGestureDetector
-    private var mScaleFactor = 1f
-    private var minScale = 1f
-    private var maxScale = 1.5f
+    private var mScaleFactor: Float = 1f
 
-    private lateinit var gestureDetector: GestureDetector
-    private var mLastTouchX = 0f
-    private var mLastTouchY = 0f
-    private var mPosX = 0f
-    private var mPosY = 0f
+    private var mMaxWidth: Float = 0f
 
-    constructor(context: Context) : super(context) {
-        if (!isInEditMode) {
-            mScaleDetector = ScaleGestureDetector(getContext(), ScaleListener())
-            gestureDetector = GestureDetector(getContext(), GestureListener())
-        }
+    private var mLastTouchX: Float = 0f
+
+    private var mTouchX: Float = 0f
+
+    private var mWidth: Float = 0f
+
+    private var mIsZoomEnabled: Boolean = true
+
+    private var mMaxZoom: Float = 3f
+
+    private var mMinZoom: Float = 1f
+
+    private var mQuality: Int = 0
+
+    private var mPosition = -1
+
+    init {
+        mScaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
     }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        if (!isInEditMode) {
-            mScaleDetector = ScaleGestureDetector(getContext(), ScaleListener())
-            gestureDetector = GestureDetector(getContext(), GestureListener())
-        }
-    }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        if (!isInEditMode) {
-            mScaleDetector = ScaleGestureDetector(getContext(), ScaleListener())
-            gestureDetector = GestureDetector(getContext(), GestureListener())
-        }
+    fun setMaxZoom(maxZoom: Float) {
+        mMaxZoom = maxZoom
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        width = MeasureSpec.getSize(widthMeasureSpec).toFloat()
-        height = MeasureSpec.getSize(heightMeasureSpec).toFloat()
+        mWidth = MeasureSpec.getSize(widthMeasureSpec).toFloat()
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         try {
             return super.onInterceptTouchEvent(ev)
-        } catch (ex: IllegalArgumentException) {
-            ex.printStackTrace()
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
         }
+
         return false
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        super.onTouchEvent(event)
+    override fun performClick(): Boolean {
+        super.performClick()
+        return true
+    }
 
-        val action = event.action
-
-        mScaleDetector.onTouchEvent(event)
-        gestureDetector.onTouchEvent(event)
-
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        super.onTouchEvent(ev)
+        performClick()
+        val action = ev.action
+        mScaleGestureDetector.onTouchEvent(ev)
         when (action and MotionEvent.ACTION_MASK) {
-            MotionEvent.ACTION_DOWN -> { // pressed
-                mLastTouchX = event.x
-                mLastTouchY = event.y
-                mActivePointerId = event.getPointerId(0)
+            MotionEvent.ACTION_DOWN -> {
+                val x = ev.x
+                mLastTouchX = x
             }
 
-            MotionEvent.ACTION_MOVE -> { // moved
-                val pointerIndex = (action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT)
-                val x = event.getX(pointerIndex)
-                val y = event.getY(pointerIndex)
+            MotionEvent.ACTION_MOVE -> {
+                val pointerIndex =
+                    action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
+                val x = ev.getX(pointerIndex)
                 val dx = x - mLastTouchX
-                val dy = y - mLastTouchY
-                mPosX += dx
-                mPosY += dy
 
-                if (mPosX > 0.0f) mPosX = 0.0f else if (mPosX < maxWidth) mPosX = maxWidth
-                if (mPosY > 0.0f) mPosY = 0.0f else if (mPosY < maxHeight) mPosY = maxHeight
+                mTouchX += dx
+
+                if (mTouchX > 0f)
+                    mTouchX = 0f
+                else if (mTouchX < mMaxWidth)
+                    mTouchX = mMaxWidth
+
                 mLastTouchX = x
-                mLastTouchY = y
                 invalidate()
             }
-            MotionEvent.ACTION_UP -> { // released
-                mActivePointerId = INVALID_POINTER_ID
-            }
-            MotionEvent.ACTION_CANCEL -> {
-                mActivePointerId = INVALID_POINTER_ID
-            }
+
             MotionEvent.ACTION_POINTER_UP -> {
-                val pointerIndex = action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
-                val pointerId = event.getPointerId(pointerIndex)
-                if (pointerId == mActivePointerId) {
-                    val newPointerIndex = if (pointerIndex == 0) 1 else 0
-                    mLastTouchX = event.getX(newPointerIndex)
-                    mLastTouchY = event.getY(newPointerIndex)
-                    mActivePointerId = event.getPointerId(newPointerIndex)
-                }
+                val pointerIndex =
+                    action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT
+                val newPointerIndex = if (pointerIndex == 0) 1 else 0
+                mLastTouchX = ev.getX(newPointerIndex)
             }
         }
+
         return true
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.save()
-        canvas.translate(mPosX, mPosY)
+        canvas.translate(mTouchX, 0f)
         canvas.scale(mScaleFactor, mScaleFactor)
         canvas.restore()
     }
 
     override fun dispatchDraw(canvas: Canvas) {
         canvas.save()
-        if (mScaleFactor == 1.0f) {
-            mPosX = 0.0f
-            mPosY = 0.0f
+
+        if (mScaleFactor == mMinZoom) {
+            mTouchX = 0f
         }
-        canvas.translate(mPosX, mPosY)
+
+        canvas.translate(mTouchX, 0f)
         canvas.scale(mScaleFactor, mScaleFactor)
+
         super.dispatchDraw(canvas)
+
         canvas.restore()
         invalidate()
     }
 
-    private inner class ScaleListener : SimpleOnScaleGestureListener() {
+    private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            mScaleFactor *= detector.scaleFactor
-            mScaleFactor = max(1.0f, min(mScaleFactor, 3.0f))
-            maxWidth = width - width * mScaleFactor
-            maxHeight = height - height * mScaleFactor
-            invalidate()
+            if (mIsZoomEnabled) {
+                mScaleFactor *= detector.scaleFactor
+                mScaleFactor = max(mMinZoom, min(mScaleFactor, mMaxZoom))
+                mMaxWidth = mWidth - mWidth * mScaleFactor
+                invalidate()
+            }
             return true
         }
-    }
-
-    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            mScaleFactor = if (mScaleFactor == maxScale) minScale else maxScale
-            invalidate()
-            return false
-        }
-    }
-
-    companion object {
-        private const val INVALID_POINTER_ID = -1
     }
 }

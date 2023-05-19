@@ -11,6 +11,18 @@
     <string name="kr">Контрольная</string>
 
 
+    <string name="mode_night_no">Светло</string>
+    <string name="mode_night_yes">Темно</string>
+    <string name="mode_night_system">Система</string>
+
+
+    <!-- Сервисы -->
+    <string name="practise">Практика</string>
+    <string name="lectures">Лекции</string>
+    <string name="settings">Настройка</string>
+
+
+    <!-- Практика -->
     <!-- Варианты -->
     <string name="var">Варианты</string>
     <string name="ag_b">Б: Алгебра и Геометрия</string>
@@ -28,6 +40,14 @@
     <string name="mnogochleny">Многочлены</string>
     <string name="equalities">Сравнения</string>
 
+    <string name="method_coord">Метод координат</string>
+    <string name="vekt_algebra_space">Векторная алгебра в пространстве</string>
+    <string name="vekt_algebra_koord">Векторная алгебра в координатах</string>
+    <string name="pramaya_na_ploskosti">Прямая на плоскости</string>
+    <string name="linii_2_poradka">Линии 2 порядка</string>
+    <string name="ploskost_in_prost">Плоскость в пространстве</string>
+    <string name="poverh_2_poradka">Поверхность 2 порядка</string>
+
     <!-- Предмет -->
     <string name="ma">Матанализ</string>
     <!-- Темы -->
@@ -35,4 +55,11 @@
     <string name="predel">Пердел</string>
     <string name="proizvodnaya">Производная</string>
     <string name="primenenie_proizvodnoy">Применение производной</string>
+
+    <string name="pervoobraznaya">Первообразная</string>
+    <string name="opred_integral">Определенный интеграл</string>
+    <string name="func_some_args">Первообразная</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

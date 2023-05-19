@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.will.kgu_math.databinding.TemplateThemeBinding
-import com.will.kgu_math.utils.LocaleManager
+import com.will.kgu_math.app.LocaleManager
 
 class ThemesAdapter(
     items: List<String>,

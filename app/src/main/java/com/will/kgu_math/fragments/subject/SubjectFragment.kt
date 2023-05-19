@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.will.kgu_math.R
 import com.will.kgu_math.databinding.FragmentSubjectBinding
 import com.will.kgu_math.fragments.theme.ThemeFragment
-import com.will.kgu_math.utils.AssetsManager
+import com.will.kgu_math.app.AssetsManager
+import com.will.kgu_math.fragments.pdf_viewer.PdfViewerFragment
 
 class SubjectFragment(private val subjectPath: String? = null) : Fragment() {
 
@@ -31,11 +32,19 @@ class SubjectFragment(private val subjectPath: String? = null) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.btnVariants.setOnClickListener {
+            requireActivity().supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                addToBackStack("v")
+                replace(R.id.nav_host_fragment, PdfViewerFragment("${vm.subjectPath}/v.pdf"), "v")
+            }
+        }
 
         subjectPath?.let {
             vm.subjectPath = subjectPath
 
             vm.themeNames = AssetsManager.mapAssets(vm.subjectPath)
+                .filter{ subjectName -> subjectName[0].isDigit() }
         }
 
         binding.rwThemes.apply {

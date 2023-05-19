@@ -10,8 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.will.kgu_math.ViewPagerAdapter
 import com.will.kgu_math.databinding.FragmentSubjectsBinding
 import com.will.kgu_math.fragments.subject.SubjectFragment
-import com.will.kgu_math.utils.AssetsManager
-import com.will.kgu_math.utils.LocaleManager
+import com.will.kgu_math.app.LocaleManager
 
 class SubjectsFragment : Fragment() {
 
@@ -31,16 +30,16 @@ class SubjectsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (vm.subjectNames == null) {
-            vm.subjectNames = AssetsManager.mapAssets("root")
-        }
+        vm.getSubjectNames()
 
         setupViewPager()
         setupTabLayout()
     }
 
     private fun setupViewPager() {
-        val fragments = vm.subjectNames!!.map { subjectName -> SubjectFragment("root/$subjectName") }
+        val fragments = vm.subjectNames
+            .map { subjectName -> SubjectFragment("root/$subjectName") }
+
 
         binding.viewPager.adapter = ViewPagerAdapter(
             childFragmentManager,
@@ -51,7 +50,7 @@ class SubjectsFragment : Fragment() {
 
     private fun setupTabLayout() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
-            tab.text = LocaleManager.getStringByName(vm.subjectNames!![pos])
+            tab.text = LocaleManager.getStringByName(vm.subjectNames[pos])
         }.attach()
     }
 
